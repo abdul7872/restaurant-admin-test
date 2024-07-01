@@ -1,75 +1,66 @@
 'use client'
 import React from 'react';
-import { Table } from 'antd';
+import { Table, Tooltip } from 'antd';
 import type { TableColumnsType, TableProps } from 'antd';
+import { DataType } from '@/app/page';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 
-interface DataType {
-    key: React.Key;
-    name: string;
-    age: number;
-    address: string;
+interface Props {
+    restaurantList: DataType[]
+    onDeleteRestaurant: (key: string) => void,
+    onEditRestaurant: (data: DataType) => void
 }
 
-function RestaurantList() {
+function RestaurantList({ restaurantList, onDeleteRestaurant, onEditRestaurant }: Props) {
     const columns: TableColumnsType<DataType> = [
         {
             title: 'Name',
             dataIndex: 'name',
+            defaultSortOrder: 'descend',
             sorter: (a, b) => a.name.localeCompare(b.name)
         },
         {
-            title: 'Age',
-            dataIndex: 'age',
-            defaultSortOrder: 'descend',
-            sorter: (a, b) => a.age - b.age,
+            title: 'Email',
+            dataIndex: 'email',
+            sorter: (a, b) => a.email.localeCompare(b.email),
+        },
+        {
+            title: 'Description',
+            dataIndex: 'description',
+            sorter: (a, b) => a.description.localeCompare(b.description)
         },
         {
             title: 'Address',
             dataIndex: 'address',
             sorter: (a, b) => a.address.localeCompare(b.address)
         },
-    ];
-
-    const data = [
         {
-            key: '1',
-            name: 'John Brown',
-            age: 32,
-            address: 'New York No. 1 Lake Park',
-        },
-        {
-            key: '2',
-            name: 'Jim Green',
-            age: 42,
-            address: 'London No. 1 Lake Park',
-        },
-        {
-            key: '3',
-            name: 'Joe Black',
-            age: 32,
-            address: 'Sydney No. 1 Lake Park',
-        },
-        {
-            key: '4',
-            name: 'Jim Red',
-            age: 32,
-            address: 'London No. 2 Lake Park',
+            title: 'Action',
+            dataIndex: '',
+            render: (_, data) => {
+                return (
+                    <div className='flex space-x-2'>
+                        <Tooltip title="Edit" arrow={false} className='cursor-pointer'>
+                            <EditOutlined onClick={()=>onEditRestaurant(data)} style={{ color: "blue"}} className='text-lg' />
+                        </Tooltip>
+                        <Tooltip title="Delete" arrow={false} className='cursor-pointer'>
+                            <DeleteOutlined onClick={()=>onDeleteRestaurant(data?.key)} style={{ color: "red"}} className='text-lg' />
+                        </Tooltip>
+                    </div>
+                )
+            }
         },
     ];
-
-    const onChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter, extra) => {
-        console.log('params', pagination, filters, sorter, extra);
-    };
 
     return (
         <div>
-            <h1 className="text-lg lg:text-2xl text-slate-600">Restaurant List</h1>
+            <h1 className="my-2 text-lg lg:text-2xl text-slate-600">Restaurant List</h1>
 
             <Table
                 columns={columns}
-                dataSource={data}
-                // onChange={onChange}
+                dataSource={restaurantList}
                 showSorterTooltip={false}
+                tableLayout={'auto'}
             />
         </div>
     )

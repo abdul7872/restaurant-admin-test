@@ -1,24 +1,43 @@
 'use client'
 
-import { Button, Form, Input, InputNumber } from "antd"
+import { DataType } from "@/app/page";
+import { Button, Form, Input } from "antd"
+import { Dispatch, SetStateAction, useEffect } from "react";
 
+interface Props {
+    editData: DataType | undefined
+    setRestaurantList: Dispatch<SetStateAction<DataType[]>>
+}
 
+function RestaurantForm( { setRestaurantList, editData }: Props ) {
 
-// export type FormState = typeof initialState;
+    const [form] = Form.useForm<DataType>();
 
-function RestaurantForm() {
+    useEffect(()=>{
+        if(editData?.key){
+            form.setFieldsValue(editData);
+        }
+    }, [editData])
 
     const onFinish = (values: any) => {
-        console.log(values);
+        if(editData?.key){
+            setRestaurantList(prev=> prev.map((item) => {
+                return item.key === editData.key ? {key: editData?.key, ...values} : item;
+            }))
+        }else {
+            setRestaurantList(prev=> [...prev, {...values, key: Date.now().toString()}])
+        }
+        form.resetFields();
     };
 
     return (
         <Form
-            title="Restaurant Form:"
             name="restaurantForm"
+            form={form}
             onFinish={onFinish}
             style={{ marginTop: 16 }}
             layout={"vertical"}
+            autoComplete="off"
         >
 
             <h1 className="text-lg lg:text-2xl text-slate-600">Restaurant Form:</h1>
@@ -43,13 +62,13 @@ function RestaurantForm() {
                         <Input />
                     </Form.Item>
 
-                    <Form.Item label="Description," name="description," rules={[{ required: true, message: 'Please enter restaurant description!' }]}>
+                    <Form.Item label="Description" name="description" rules={[{ required: true, message: 'Please enter restaurant description!' }]}>
                         <Input.TextArea />
                     </Form.Item>
                 </div>
             </div>
 
-            <div className="mt-5 flex justify-center">
+            <div className="mt-2 flex justify-center">
                 <Form.Item noStyle>
                     <Button type="primary" htmlType="submit">
                         Submit
