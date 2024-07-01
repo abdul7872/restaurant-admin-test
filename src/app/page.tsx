@@ -1,9 +1,15 @@
+import RestaurantForm from "@/components/RestaurantForm";
+import RestaurantList from "@/components/RestaurantList";
 import Image from "next/image";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      Home
-    </main>
+    <div className='px-8 xl:px-20 mb-20'>
+      <RestaurantForm />
+      hello
+      {/* Translation History */}
+      <RestaurantList />
+
+    </div>
   );
 }
